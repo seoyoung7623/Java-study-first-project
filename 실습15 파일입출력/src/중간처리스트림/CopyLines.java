@@ -21,7 +21,6 @@ public class CopyLines {
 		} catch (IOException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			
 		}
 	}
 }
