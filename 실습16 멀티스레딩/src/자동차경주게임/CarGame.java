@@ -1,10 +1,10 @@
 package 자동차경주게임;
 
+//실행안됨
 import java.awt.Image;
 import javax.swing.*;
 
 public class CarGame extends JFrame{
-	
 	class MyThread extends Thread{
 		private JLabel label;
 		private int x,y;
@@ -13,7 +13,8 @@ public class CarGame extends JFrame{
 			this.x = x;
 			this.y = y;
 			label = new JLabel();
-			Image img = new ImageIcon(fname).getImage();
+			ImageIcon icon = new ImageIcon(fname);
+			Image img = icon.getImage();
 			Image changeimg = img.getScaledInstance(100, 50, Image.SCALE_SMOOTH);
 			label.setIcon(new ImageIcon(changeimg));
 			label.setBounds(x,y,100,100);
@@ -46,6 +47,6 @@ public class CarGame extends JFrame{
 		setVisible(true);
 	}
 	public static void main(String[] args) {
-		CarGame g = new CarGame();
+		CarGame t = new CarGame();
 	}
 }
