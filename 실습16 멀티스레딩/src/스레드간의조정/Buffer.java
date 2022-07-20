@@ -4,6 +4,8 @@ public class Buffer {
 	private int data;
 	 private boolean empty = true;
 	 
+	 //wait(), notifyall() 이들어가야 순차적으로 실행가능
+	 //동기화
 	 public synchronized int get() {
 		 while(empty) {
 			 try {
