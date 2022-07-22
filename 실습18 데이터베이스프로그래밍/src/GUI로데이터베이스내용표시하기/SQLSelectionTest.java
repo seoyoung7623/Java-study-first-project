@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+//statement 객체를 생성하기 위해서는 connection을 먼저 연결해야한다.
 class MyFrame extends JFrame {
 	JTextField id, title, p, year, price, author;
 	JButton previousButton, nextButton, InsertButton, deleteButton, searchButton;
@@ -24,7 +25,7 @@ class MyFrame extends JFrame {
 		super("Database Viewer");
 		Connection con = makeConnection();
 		stmt = con.createStatement();
-		rs = stmt.executeQuery("SELECT * FROM books");
+		rs = stmt.executeQuery("SELECT * FROM books"); //resultset을 반환 insert, delete, update 사용시
 		setLayout(new GridLayout(0, 2));
 		add(new JLabel("ID", JLabel.CENTER));
 		add(id = new JTextField());

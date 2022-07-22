@@ -31,9 +31,11 @@ public class SQLPreparedTest {
 	//Prepares Statements 기능을 사용하여서 많이 사용되는 쿼지문장을 미리 만들어두고 필요할때마다 사용해보자
 	public static void main(String[] args) throws SQLException{
 		Connection con = makeConnection();
+		//외부에서 제공되는 값은 ?로 표시된다.
 		String quary = "select books.title, books.price"+" from books"+" where publisher = ?";
 		PreparedStatement stmt = con.prepareStatement(quary);
-		stmt.setString(1,"Wiley");
+		stmt.setString(1,"Wiley"); //?에 해당하는 값을 주어준다.
+		//첫번째 인수는 ? 변수의 번호, 두번째 인수는 변수의 값
 		
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
