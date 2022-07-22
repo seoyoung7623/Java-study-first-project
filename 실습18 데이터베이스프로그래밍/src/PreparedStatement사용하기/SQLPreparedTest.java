@@ -1,8 +1,14 @@
-package JDBC이용한프로그래밍;
+package PreparedStatement사용하기;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class ConnectDatabase {
+import com.mysql.cj.xdevapi.PreparableStatement;
+
+public class SQLPreparedTest {
 	public static Connection makeConnection() {
 		String url = "jdbc:mysql://localhost:3306/book_db?characterEncoding=UTF-8 &serverTimezone=UTC";
 		String id = "root";
@@ -22,14 +28,18 @@ public class ConnectDatabase {
 		return con;
 	}
 	
+	//Prepares Statements 기능을 사용하여서 많이 사용되는 쿼지문장을 미리 만들어두고 필요할때마다 사용해보자
 	public static void main(String[] args) throws SQLException{
 		Connection con = makeConnection();
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("select * from books");
-		while (rs.next()) {
-			int id = rs.getInt("book_id");
+		String quary = "select books.title, books.price"+" from books"+" where publisher = ?";
+		PreparedStatement stmt = con.prepareStatement(quary);
+		stmt.setString(1,"Wiley");
+		
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
 			String title = rs.getString("title");
-			System.out.println(id + " "+ title);
+			int price = rs.getInt("price");
+			System.out.println(title+" "+ price);
 		}
 		con.close();
 	}
