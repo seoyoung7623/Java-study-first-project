@@ -64,7 +64,6 @@ public class Main extends Application {
 					textArea.appendText(message);
 				});
 			} catch (Exception e) {
-				// TODO: handle exception
 				stopClient();
 				break;
 			}
@@ -123,21 +122,21 @@ public class Main extends Application {
 		Button sendButton = new Button("보내기");
 		sendButton.setDisable(true);
 		
-		sendButton.setOnAction(e -> {
+		sendButton.setOnAction(event -> {
 			send(userName.getText()+": "+ input.getText()+"\n");
 			input.setText("");
 			input.requestFocus();
 		});
 		
 		Button connectionBtn = new Button("접속하기");
-		connectionBtn.setOnAction(e -> {
+		connectionBtn.setOnAction(event -> {
 			if(connectionBtn.getText().equals("접속하기")) {
 				int port = 9876;
 				try {
 					port = Integer.parseInt(portText.getText());
-				} catch (Exception e2) {
+				} catch (Exception e) {
 					// TODO: handle exception
-					e2.printStackTrace();
+					e.printStackTrace();
 				}
 				startClient(IPText.getText(), port);
 				Platform.runLater(() -> {
@@ -168,7 +167,7 @@ public class Main extends Application {
 		Scene scene = new Scene(root,400,400);
 		primaryStage.setTitle("[ 채팅 클라이언트 ]");
 		primaryStage.setScene(scene);
-		primaryStage.setOnCloseRequest(e -> stopClient());
+		primaryStage.setOnCloseRequest(event -> stopClient());
 		primaryStage.show();
 		
 		connectionBtn.requestFocus();

@@ -22,7 +22,7 @@ public class Server {
 			System.out.println("클라이언트와 연결되었음.");
 			
 			while (true) {
-				String msg = in.readLine();
+				String msg = in.readLine(); //in받은파일을 읽음
 				if(msg.equalsIgnoreCase("quit")) {
 					System.out.println("클라이언트에서 연결을 종료하였음.");
 					break;

@@ -24,7 +24,7 @@ public class Main extends Application {
 	public static ExecutorService threadPool; //여러개의 스레드를 효율적으로 관리
 	public static Vector<Client> clients = new Vector<Client>();
 	
-	ServerSocket serverSocket;
+	ServerSocket serverSocket; //연결소켓
 	
 	public void startServer(String IP, int port) {
 		try {
@@ -45,9 +45,9 @@ public class Main extends Application {
 				// TODO Auto-generated method stub
 				while(true) {
 					try {
-						Socket socket = serverSocket.accept();
-						clients.add(new Client(socket));
-						System.out.println("[클라리언트 접속]"+socket.getRemoteSocketAddress()+": "+Thread.currentThread().getName());
+						Socket socket = serverSocket.accept(); //클라이언트가 연결을 시도하길 기다림
+						clients.add(new Client(socket)); //클라이언트에 소켓연결추가
+						System.out.println("[클라이언트 접속]"+socket.getRemoteSocketAddress()+": "+Thread.currentThread().getName());
 					} catch (Exception e) {
 						if(!serverSocket.isClosed()) {
 							stopServer();
