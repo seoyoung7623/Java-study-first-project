@@ -17,7 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
-
+//chat client
 public class Main extends Application {
 	
 	Socket socket;
@@ -149,7 +149,7 @@ public class Main extends Application {
 			} else {
 				stopClient();
 				Platform.runLater(() -> {
-					textArea.appendText(" [채팅방 퇴장]\n");
+					textArea.appendText("[ 채팅방 퇴장 ]\n");
 				});
 				connectionBtn.setText("접속하기");
 				input.setDisable(true);

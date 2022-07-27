@@ -18,7 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-
+//chat server
 public class Main extends Application {
 	
 	public static ExecutorService threadPool; //여러개의 스레드를 효율적으로 관리
@@ -28,61 +28,63 @@ public class Main extends Application {
 	
 	public void startServer(String IP, int port) {
 		try {
+			//서버 소켓을 호출한다
 			serverSocket = new ServerSocket();
-			serverSocket.bind(new InetSocketAddress(IP,port));
-		} catch (Exception e) {
-			// TODO: handle exception
+			//서버컴퓨터 역할을 수행하는 컴퓨터가 특정한 클라이언트의 접속을 기다림
+			serverSocket.bind(new InetSocketAddress(IP, port));
+		}catch (Exception e) {
 			e.printStackTrace();
+			//서버소켓이 닫혀있지 않다면 서버를 닫아준다.
 			if(!serverSocket.isClosed()) {
 				stopServer();
 			}
-			return;
 		}
-		//클라이언트가 접속할때까지 기다리는 쓰레드
+		//클라이언트가 접속할 때까지 계속 기다리는 쓰레드
 		Runnable thread = new Runnable() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				
 				while(true) {
 					try {
-						Socket socket = serverSocket.accept(); //클라이언트가 연결을 시도하길 기다림
-						clients.add(new Client(socket)); //클라이언트에 소켓연결추가
-						System.out.println("[클라이언트 접속]"+socket.getRemoteSocketAddress()+": "+Thread.currentThread().getName());
-					} catch (Exception e) {
+						Socket socket = serverSocket.accept();
+						clients.add(new Client(socket));
+						System.out.println("[클라이언트 접속] " + socket.getRemoteSocketAddress() + " : " + Thread.currentThread().getName());
+					}catch (Exception e) {
 						if(!serverSocket.isClosed()) {
 							stopServer();
 						}
 						break;
-						// TODO: handle exception
 					}
 				}
 				
 			}
 		};
-		//스레드풀 초기화후 스레드를 넣어줌
 		threadPool = Executors.newCachedThreadPool();
 		threadPool.submit(thread);
 	}
 	
 	public void stopServer() {
 		try {
+			//현재 작동 중인 모든 소켓 닫기
 			Iterator<Client> iterator = clients.iterator();
 			while(iterator.hasNext()) {
 				Client client = iterator.next();
 				client.socket.close();
 				iterator.remove();
 			}
+			//서버 소켓 객체 닫기
 			if(serverSocket != null && !serverSocket.isClosed()) {
 				serverSocket.close();
 			}
+			//쓰레드 풀 종료하기
 			if(threadPool != null && !threadPool.isShutdown()) {
 				threadPool.shutdown();
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}	
+		
+	}
 	
 	//ui생성
 	@Override
@@ -99,30 +101,29 @@ public class Main extends Application {
 		toggleButton.setMaxWidth(Double.MAX_VALUE);
 		BorderPane.setMargin(toggleButton, new Insets(1,0,0,0));
 		root.setBottom(toggleButton);
-		
 		String IP = "127.0.0.1";
 		int port = 9876;
 		
 		toggleButton.setOnAction(event -> {
 			if(toggleButton.getText().equals("시작하기")) {
 				startServer(IP, port);
-				Platform.runLater(() -> {
-					String message = String.format("[서버 시작]\n", IP,port);
+				//바로 출력하는 것이 아니라 GUI 요소를 기다리고 출력해줘야한다.
+				Platform.runLater(() ->{
+					String message = String.format("[서버 시작]\n", IP, port);
 					textArea.appendText(message);
 					toggleButton.setText("종료하기");
-				});
-			} else {
-				stopServer();
-				Platform.runLater(() -> {
-					String message = String.format("[서버 종료]\n", IP,port);
-					textArea.appendText(message);
-					toggleButton.setText("시작하기");
-				});
-			}
+					});
+				}else {
+					stopServer();
+					Platform.runLater(() ->{
+						String message = String.format("[서버 종료]\n", IP, port);
+						textArea.appendText(message);
+						toggleButton.setText("시작하기");
+						});
+				}
 		});
-		
-		Scene scene = new Scene(root,400,400);
-		primaryStage.setTitle("[채팅 서버]");
+		Scene scene = new Scene(root, 400,400);
+		primaryStage.setTitle("채팅 서버");
 		primaryStage.setOnCloseRequest(event -> stopServer());
 		primaryStage.setScene(scene);
 		primaryStage.show();
