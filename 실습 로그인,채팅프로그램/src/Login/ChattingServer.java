@@ -2,6 +2,7 @@ package Login;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 
 import javax.swing.JFrame;
@@ -21,8 +22,30 @@ public class ChattingServer extends JFrame {
 			e.printStackTrace();
 			//서버소켓이 닫혀있지 않다면 서버를 닫아준다.
 			if(!serverSocket.isClosed()) {
-				//stopServer();
+				stopServer();
 			}
 		}
+	}
+	
+	public void stopServer() {
+		try {
+//			//현재 작동 중인 모든 소켓 닫기
+//			Iterator<Client> iterator = clients.iterator();
+//			while(iterator.hasNext()) {
+//				Client client = iterator.next();
+//				client.socket.close();
+//				iterator.remove();
+//			}
+			//서버 소켓 객체 닫기
+			if(serverSocket != null && !serverSocket.isClosed()) {
+				serverSocket.close();
+			}
+			//쓰레드 풀 종료하기
+			if(threadPool != null && !threadPool.isShutdown()) {
+				threadPool.shutdown();
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 }

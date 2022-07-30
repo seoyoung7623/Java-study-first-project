@@ -14,6 +14,8 @@ import javax.swing.JPasswordField;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class EnterFrame extends JFrame implements ActionListener{
@@ -23,9 +25,13 @@ public class EnterFrame extends JFrame implements ActionListener{
 	private JPasswordField pwdField;
 	private JButton loginBtn, joinBtn;
 	private JLabel idlab, pwdlab;
+	private String userPwd;
 	
-	ArrayList<memberList> member = new ArrayList<memberList>();
+	static ArrayList<memberList> member = new ArrayList<memberList>();
 	MemberFrame memberFrame;
+	ChattingFrame chattingFrame;
+	ChattingServer chattingServer;
+	
 
 	/**
 	 * Launch the application.
@@ -48,7 +54,15 @@ public class EnterFrame extends JFrame implements ActionListener{
 	 */
 	public EnterFrame() {
 		
+		chattingServer = new ChattingServer();
+		chattingServer.startServer("127.0.0.1", 9876);
 		memberFrame = new MemberFrame();
+		
+		try {
+			chattingFrame = new ChattingFrame();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 643, 457);
@@ -113,6 +127,7 @@ public class EnterFrame extends JFrame implements ActionListener{
 		memberFrame.pwdFieldCk.setText("");
 	}
 
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//메인화면 버튼	
@@ -120,8 +135,23 @@ public class EnterFrame extends JFrame implements ActionListener{
 			this.setVisible(false);
 			memberFrame.setVisible(true);
 		}
+		//로그인창에 들어감
 		else if(e.getSource() == loginBtn){
-			
+			userPwd = new String(pwdField.getPassword());
+			System.out.println(userPwd);
+			for(memberList i:member) {
+				String myPwd = new String(i.pwd);
+				if(i.id.equals(idField.getText()) && myPwd.equals(userPwd)) {
+					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
+					chattingFrame.userLab.setText("이름: "+ i.name + " (" + i.id+") ");
+					this.setVisible(false);
+					chattingFrame.setVisible(true);
+					//로그인 창
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "로그인이 틀렸습니다.");
+				}
+			}
 		}
 		
 		//회원가입
@@ -131,9 +161,9 @@ public class EnterFrame extends JFrame implements ActionListener{
 		else if(e.getSource() == memberFrame.okBtn) {
 			char[] pwd = memberFrame.pwdField.getPassword();
 			char[] pwdCk = memberFrame.pwdFieldCk.getPassword();
-			String pwd1 = new String(pwd);
+			userPwd = new String(pwd);
 			String pwd2 = new String(pwdCk);
-			if(pwd1.equals(pwd2)) {
+			if(userPwd.equals(pwd2)) {
 				String username = memberFrame.nameField.getText();
 				String userid = memberFrame.idField.getText();
 				char[] userpwd = memberFrame.pwdField.getPassword();
@@ -150,6 +180,9 @@ public class EnterFrame extends JFrame implements ActionListener{
 				memberFrame.pwdFieldCk.setText("");
 			}
 		}
+//		else if(e.getSource() == chattingFrame.sendBtn){
+//			chattingFrame.send();
+//		}
 	}
 
 }
