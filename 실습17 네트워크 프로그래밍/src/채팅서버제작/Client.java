@@ -13,7 +13,6 @@ public class Client {
 		BufferedReader in = null;
 		PrintWriter out = null;
 		final Scanner sc = new Scanner(System.in);
-		
 		try {
 			//socket(int address,int port) 주소 포트번호
 			clientSocket = new Socket("localhost",5000);

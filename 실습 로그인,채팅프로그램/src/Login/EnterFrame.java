@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import javafx.application.Platform;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -51,18 +54,17 @@ public class EnterFrame extends JFrame implements ActionListener{
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
 	 */
-	public EnterFrame() {
+	public EnterFrame() throws IOException {
 		
+		String IP = "127.0.0.1";
+		int port = 9876;
 		chattingServer = new ChattingServer();
-		chattingServer.startServer("127.0.0.1", 9876);
 		memberFrame = new MemberFrame();
-		
-		try {
-			chattingFrame = new ChattingFrame();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		chattingServer.startServer(IP, port);
+		chattingFrame = new ChattingFrame();
+
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 643, 457);
@@ -144,6 +146,7 @@ public class EnterFrame extends JFrame implements ActionListener{
 				if(i.id.equals(idField.getText()) && myPwd.equals(userPwd)) {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
 					chattingFrame.userLab.setText("이름: "+ i.name + " (" + i.id+") ");
+					chattingFrame.myname(myPwd);
 					this.setVisible(false);
 					chattingFrame.setVisible(true);
 					//로그인 창

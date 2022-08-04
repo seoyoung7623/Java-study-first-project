@@ -25,7 +25,7 @@ public class Client {
 						int length = in.read(buffer);
 						while(length == -1) throw new IOException();
 						//메시지가 온 곳의 소켓 어드레스와 스레드 이름을 print한다.
-						System.out.println("[메시지 수신 성공]" + socket.getRemoteSocketAddress() + ": " + Thread.currentThread().getName());
+						System.out.println("[메시지 수신 성공] " + socket.getRemoteSocketAddress() + ": " + Thread.currentThread().getName());
 						String message = new String(buffer, 0, length, "UTF-8");
 						//전달받은 메시지를 다른 클라이언트에게도 전송
 						for(Client client : Main.clients) {

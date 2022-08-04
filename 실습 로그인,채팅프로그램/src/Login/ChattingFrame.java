@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import javafx.application.Platform;
 
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
@@ -28,7 +27,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class ChattingFrame extends JFrame {
-
+	
+	private String myName;
 	private JPanel contentPane;
 	JTextArea textArea;
 	private JPanel p2;
@@ -39,6 +39,7 @@ public class ChattingFrame extends JFrame {
 	JLabel userLab;
 	
 	Socket socket;
+	ChattingServer chattingServer;
 	
 	public void startClient(String IP, int port) {
 		Thread thread = new Thread() {
@@ -50,7 +51,6 @@ public class ChattingFrame extends JFrame {
 				if(!socket.isClosed()) {
 					stopClient();
 					System.out.println("[서버 접속 실패]");
-					Platform.exit();
 				}
 			}
 		}
@@ -78,9 +78,7 @@ public class ChattingFrame extends JFrame {
 				int length = in.read(buffer);
 				if(length == -1) throw new IOException();
 				String message = new String(buffer,0,length,"UTF-8");
-				Platform.runLater(() -> {
-					textArea.append(message);
-				});
+				textArea.append(message);
 			} catch (Exception e) {
 				stopClient();
 				break;
@@ -104,8 +102,16 @@ public class ChattingFrame extends JFrame {
 		};
 		thread.start();
 	}
-
+	
+	public void myname(String myName) {
+		this.myName = myName;
+	}
 	public ChattingFrame() throws IOException {
+		String IP = "127.0.0.1";
+		int port = 9876;
+		
+		chattingServer = new ChattingServer();
+		chattingServer.startServer(IP, port);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -119,7 +125,7 @@ public class ChattingFrame extends JFrame {
 		p1.setBorder(BorderFactory.createEmptyBorder(5,5,0,0));
 		p1.setLayout(new BorderLayout(0, 0));
 	
-		textArea = new JTextArea();
+		textArea = new JTextArea("내용 \n");
 		textArea.setEditable(false);
 		p1.add(textArea);
 		
@@ -140,13 +146,19 @@ public class ChattingFrame extends JFrame {
 		sendField.setColumns(10);
 		
 		sendBtn = new JButton("\uBCF4\uB0B4\uAE30");
+		p2.add(sendBtn, BorderLayout.EAST);
+		startClient(IP, port);
+//		Platform.runLater(() -> {
+//			textArea.append("[ 채팅방 접속 ]\n");
+//		});
+		
 		sendBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				send(myName + ": "+sendField.getText()+"\n");
+				sendField.setText("");
+				sendField.requestFocus();
 			}
 		});
-		p2.add(sendBtn, BorderLayout.EAST);
-		
-		
 	}
 
 }
